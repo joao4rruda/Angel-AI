@@ -1,3 +1,5 @@
-from integration.OpenAI import openAI
+from integration.OpenAI import openIntegration
 
-openAI()
+def mainProcess():
+    openIntegration()
+    
