@@ -1,3 +1,4 @@
-from robot.actions.openMSN import getActions
+from robot.actions.openMSN import get_actions_menu
+from robot.actions.openMSN import get_bradesco_stock
 
-getActions()
+get_actions()
