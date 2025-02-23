@@ -19,9 +19,24 @@ def open_integration(content):
     return print(response.choices[0].message.content.strip())
 
 def ask_stock_to_ai(stock):
+    """Envia uma consulta à OpenAI para identificar a qual banco pertence um ativo. ME INFORME APENAS O NOME DO BANCO"""
+    try:
+        content = stock + " Esse ativo pertence a qual banco?"
+
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": content}],
+            max_tokens=50
+        )
+
+        return response.choices[0].message.content.strip()
+
+    except Exception as e:
+        print(f"[ERRO] Falha ao consultar OpenAI: {e}")
+        return None  # Retorno correto para erros
     """Envia uma consulta à OpenAI para identificar a qual banco pertence um ativo."""
     try:
-        content += " Esse ativo pertence a qual banco?"
+        content += " ( ME DIGA APENAS O NOME DO BANCO QUE ESTE ATIVO PERTENCE )"
         
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
@@ -33,4 +48,4 @@ def ask_stock_to_ai(stock):
 
     except Exception as e:
         print(f"Erro ao consultar OpenAI: {e}")
-        return response
+        return null

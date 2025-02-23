@@ -9,11 +9,11 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.microsoft import EdgeChromiumDriverManager
 
-from integration.OpenAI import open_integration, ask_to_ai
+from integration.OpenAI import open_integration, ask_stock_to_ai
 from database.supabase_client import insert_stocks
 
 def initialize_driver():
-    """ Configura e retorna um WebDriver do Edge. """
+    """Configura e retorna um WebDriver do Edge."""
     options = Options()
     options.add_argument("--disable-gpu")
     options.add_argument("--window-size=1920x1080")
@@ -23,8 +23,8 @@ def initialize_driver():
     return driver
 
 def get_stock_data(ticker_name, driver, wait):
-    """ Obtém os dados da ação de um banco específico. """
-    print(f"\nBuscando ações do {sticker_name}...\n")
+    """Obtém os dados da ação de um banco específico."""
+    print(f"\nBuscando ações de {ticker_name}...\n")
 
     driver.get("https://www.msn.com/pt-br/dinheiro/?id=avylgh")
 
@@ -36,9 +36,9 @@ def get_stock_data(ticker_name, driver, wait):
         except Exception:
             pass  # Ignora se o botão não estiver presente
 
-        # Localizar a barra de pesquisa e pesquisar pelo banco
+        # Localizar a barra de pesquisa e pesquisar pelo ativo
         search = wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='searchBox']/input")))
-        search.send_keys(sticker_name)
+        search.send_keys(ticker_name)
         time.sleep(2)
         search.send_keys(Keys.RETURN)
 
@@ -51,7 +51,7 @@ def get_stock_data(ticker_name, driver, wait):
             price_info = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "priceInfo-DS-EntryPoint1-1")))
             prices_info_text = price_info.text.strip()
         except Exception:
-            print(f"[ERRO] Não foi possível encontrar a precificação de {sticker_name}.")
+            print(f"[ERRO] Não foi possível encontrar a precificação de {ticker_name}.")
             return
 
         # Data de fechamento do pregão
@@ -60,18 +60,19 @@ def get_stock_data(ticker_name, driver, wait):
         # Criar JSON para preços para análise
         prices_for_analysis = f'{{"{today}": "{prices_info_text}"}}'
 
-       back_name_text = ask_stock_to_ai(sticker_name)
-       
+        # Descobrir o nome do banco associado ao ativo usando OpenAI
+        bank_name_text = ask_stock_to_ai(ticker_name)
+        print(f"{bank_name_text} !!!!!!!!!!!!!!!!!!!!!!!!!!")
+
         # Inserir dados no Supabase
-        insert_stocks(back_name_text, action_text, action_text, "Financeiro", prices_for_analysis)
+        insert_stocks(ticker_name, bank_name_text, action_text, "Financeiro", prices_for_analysis)
 
         # Apenas imprime quando os dados são inseridos com sucesso
-        print(f"[SUCESSO] Dados inseridos para {sticker_name}: Nome: {action_text}, Preço: {prices_info_text}, Data: {today}")
-
+        print(f"[SUCESSO] Dados inseridos para {ticker_name}: Nome: {action_text}, Preço: {prices_info_text}, Data: {today}")
 
         # Criar conteúdo para análise e enviar para OpenAI
-        content = f"{action_text}, {prices_info_text}, {today}, Com base nos dados históricos, qual a tendência para essa ação nos próximos meses?"
-        open_integration(content)
+        # content = f"{action_text}, {prices_info_text}, {today}, Com base nos dados históricos, qual a tendência para essa ação nos próximos meses?"
+        # open_integration(content)
 
         # Selecionar período de 3 meses (se disponível)
         try:
@@ -81,7 +82,7 @@ def get_stock_data(ticker_name, driver, wait):
         except Exception:
             pass  # Ignora se o botão não for encontrado
 
-        time.sleep(5)  # Pequena pausa antes de ir para o próximo banco
+        time.sleep(5)  # Pequena pausa antes de ir para o próximo ativo
 
     except Exception as e:
-        print(f"[ERRO] Falha ao coletar dados para {bank_name}: {e}")
+        print(f"[ERRO] Falha ao coletar dados para {ticker_name}: {e}")
