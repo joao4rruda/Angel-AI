@@ -9,7 +9,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.microsoft import EdgeChromiumDriverManager
 
-from integration.OpenAI import open_integration, ask_stock_to_ai
+from integration.OpenAI import open_integration, ask_stock_name_ai, ask_stock_description_ai
 from database.supabase_client import insert_stocks
 
 def initialize_driver():
@@ -61,18 +61,16 @@ def get_stock_data(ticker_name, driver, wait):
         prices_for_analysis = f'{{"{today}": "{prices_info_text}"}}'
 
         # Descobrir o nome do banco associado ao ativo usando OpenAI
-        bank_name_text = ask_stock_to_ai(ticker_name)
-        print(f"{bank_name_text} !!!!!!!!!!!!!!!!!!!!!!!!!!")
+        bank_name_text = ask_stock_name_ai(ticker_name)
+        print(f"{bank_name_text}")
+        
+        stock_description = ask_stock_description_ai(ticker_name)
 
         # Inserir dados no Supabase
-        insert_stocks(ticker_name, bank_name_text, action_text, "Financeiro", prices_for_analysis)
+        insert_stocks(ticker_name, bank_name_text, action_text, action_text, "Financeiro", prices_for_analysis)
 
         # Apenas imprime quando os dados são inseridos com sucesso
         print(f"[SUCESSO] Dados inseridos para {ticker_name}: Nome: {action_text}, Preço: {prices_info_text}, Data: {today}")
-
-        # Criar conteúdo para análise e enviar para OpenAI
-        # content = f"{action_text}, {prices_info_text}, {today}, Com base nos dados históricos, qual a tendência para essa ação nos próximos meses?"
-        # open_integration(content)
 
         # Selecionar período de 3 meses (se disponível)
         try:
