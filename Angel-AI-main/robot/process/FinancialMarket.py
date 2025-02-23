@@ -1,6 +1,6 @@
 import time  
 from selenium.webdriver.support.ui import WebDriverWait
-from robot.actions.openMSN import get_stock_data, initialize_driver
+from robot.actions.ProcessGetStock import get_stock_data, initialize_driver
 
 # Lista de ativos bancários a serem monitorados
 TICKERS = [

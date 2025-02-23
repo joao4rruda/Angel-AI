@@ -83,7 +83,7 @@ def get_stock_data(ticker_name, driver, wait):
         except Exception:
             pass  # Ignora se o botão não for encontrado
 
-        time.sleep(5)  # Pequena pausa antes de ir para o próximo ativo
+        time.sleep(3)  # Pequena pausa antes de ir para o próximo ativo
 
     except Exception as e:
         print(f"{Fore.RED}[ERRO] Falha ao coletar dados para {ticker_name}: {e}")
