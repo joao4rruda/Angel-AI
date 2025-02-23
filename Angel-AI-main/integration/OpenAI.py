@@ -33,8 +33,8 @@ def open_integration(content):
 def ask_stock_name_ai(ticker_name):
     """Consulta a OpenAI para identificar a qual banco pertence um ativo."""
     try:
-        print(f"{Fore.GREEN}[IA] Consultando OpenAI para identificar o banco do ativo: {stock}...")
-        prompt = f"A qual banco pertence o ativo {stock}? Responda apenas com o nome do banco, sem nenhuma informação adicional."
+        print(f"{Fore.GREEN}[IA] Consultando OpenAI para identificar o banco do ativo: {ticker_name}...")
+        prompt = f"A qual banco pertence o ativo {ticker_name}? Responda apenas com o nome do banco, sem nenhuma informação adicional."
 
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
@@ -47,15 +47,15 @@ def ask_stock_name_ai(ticker_name):
         return banco
 
     except Exception as e:
-        print(f"{Fore.RED}[ERRO] Falha ao consultar OpenAI para {stock}: {e}")
+        print(f"{Fore.RED}[ERRO] Falha ao consultar OpenAI para {ticker_name}: {e}")
         return None
 
 def ask_stock_description_ai(ticker_name):
     """Consulta a OpenAI para obter uma descrição detalhada sobre um ativo e sua relevância no mercado."""
     try:
-        print(f"{Fore.GREEN}[IA] Consultando OpenAI para obter a descrição do ativo: {stock}...")
+        print(f"{Fore.GREEN}[IA] Consultando OpenAI para obter a descrição do ativo: {ticker_name}...")
         prompt = (
-            f"Faça uma descrição precisa sobre o ativo {stock}, incluindo sua relevância no mercado financeiro. "
+            f"Faça uma descrição precisa sobre o ativo {ticker_name}, incluindo sua relevância no mercado financeiro. "
             "Explique seus principais aspectos, histórico de valorização e importância para investidores, "
             "mas seja direto e objetivo na resposta."
         )
@@ -71,6 +71,25 @@ def ask_stock_description_ai(ticker_name):
         return descricao
 
     except Exception as e:
-        print(f"{Fore.RED}[ERRO] Falha ao consultar OpenAI para {stock}: {e}")
+        print(f"{Fore.RED}[ERRO] Falha ao consultar OpenAI para {ticker_name}: {e}")
         return None
+    
+def ask_sector_ai(ticker_name):
+    """Consulta a OpenAI para obter o setor do ativo."""
+    try:
+        print(f"{Fore.GREEN}[IA] Consultando OpenAI para obter o setor do ativo: {ticker_name}...")
+        prompt = f"Qual é o setor do ativo {ticker_name}? Responda apenas com o nome do setor, sem nenhuma informação adicional."
 
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=50
+        )
+
+        setor = response.choices[0].message.content.strip()
+        print(f"{Fore.GREEN}[IA] Resposta recebida com sucesso: {setor}")
+        return setor
+
+    except Exception as e:
+        print(f"{Fore.RED}[ERRO] Falha ao consultar OpenAI para {ticker_name}: {e}")
+        return None

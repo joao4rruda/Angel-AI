@@ -8,7 +8,7 @@ SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 # Criando cliente do Supabase
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-def insert_stocks(ticker: str, company_name: str, stock_name: str, description: str, sector: str, prices_for_analysis: str):
+def insert_stocks(ticker: str, company_name: str, sector: str, description: str, prices_for_analysis: str):
     """
     Insere informações de ações no banco de dados do Supabase.
 
@@ -27,9 +27,8 @@ def insert_stocks(ticker: str, company_name: str, stock_name: str, description: 
         response = supabase.table("stocks").insert({
             "ticker": ticker,
             "company_name": company_name,
-            "stock_name": stock_name,
-            "description": description,
             "sector": sector,
+            "description": description,
             "prices_for_analysis": prices_for_analysis
         }).execute()
 

@@ -8,9 +8,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.microsoft import EdgeChromiumDriverManager
+from colorama import Fore, init
 
-from integration.OpenAI import open_integration, ask_stock_name_ai, ask_stock_description_ai
+from integration.OpenAI import open_integration, ask_stock_name_ai, ask_stock_description_ai, ask_sector_ai
 from database.supabase_client import insert_stocks
+
+# Inicializa o colorama para cores no terminal
+init(autoreset=True)
 
 def initialize_driver():
     """Configura e retorna um WebDriver do Edge."""
@@ -51,7 +55,7 @@ def get_stock_data(ticker_name, driver, wait):
             price_info = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "priceInfo-DS-EntryPoint1-1")))
             prices_info_text = price_info.text.strip()
         except Exception:
-            print(f"[ERRO] Não foi possível encontrar a precificação de {ticker_name}.")
+            print(f"{Fore.RED}[ERRO] Não foi possível encontrar a precificação de {ticker_name}.")
             return
 
         # Data de fechamento do pregão
@@ -60,17 +64,16 @@ def get_stock_data(ticker_name, driver, wait):
         # Criar JSON para preços para análise
         prices_for_analysis = f'{{"{today}": "{prices_info_text}"}}'
 
-        # Descobrir o nome do banco associado ao ativo usando OpenAI
-        bank_name_text = ask_stock_name_ai(ticker_name)
-        print(f"{bank_name_text}")
-        
+        # Consultar informações adicionais via OpenAI
+        bank_name = ask_stock_name_ai(ticker_name)
         stock_description = ask_stock_description_ai(ticker_name)
+        sector = ask_sector_ai(ticker_name)
 
         # Inserir dados no Supabase
-        insert_stocks(ticker_name, bank_name_text, action_text, action_text, "Financeiro", prices_for_analysis)
+        insert_stocks(ticker_name, bank_name, sector, stock_description, prices_for_analysis)
 
-        # Apenas imprime quando os dados são inseridos com sucesso
-        print(f"[SUCESSO] Dados inseridos para {ticker_name}: Nome: {action_text}, Preço: {prices_info_text}, Data: {today}")
+        # Mensagem de sucesso em azul, especificando que os dados vieram da IA
+        print(f"{Fore.BLUE}[SUCESSO] Dados da IA inseridos no banco para {ticker_name}")
 
         # Selecionar período de 3 meses (se disponível)
         try:
@@ -83,4 +86,4 @@ def get_stock_data(ticker_name, driver, wait):
         time.sleep(5)  # Pequena pausa antes de ir para o próximo ativo
 
     except Exception as e:
-        print(f"[ERRO] Falha ao coletar dados para {ticker_name}: {e}")
+        print(f"{Fore.RED}[ERRO] Falha ao coletar dados para {ticker_name}: {e}")
