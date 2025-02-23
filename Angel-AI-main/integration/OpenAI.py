@@ -8,8 +8,7 @@ if api_key:
 else:
     print("Erro: Variável de ambiente OPENAI_API_KEY não está definida!")
 
-def openIntegration():
-    content = input("Escreva algo : ")
+def open_integration(content):
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
