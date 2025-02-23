@@ -17,3 +17,20 @@ def open_integration(content):
         max_tokens=50
     )
     return print(response.choices[0].message.content.strip())
+
+def ask_stock_to_ai(stock):
+    """Envia uma consulta à OpenAI para identificar a qual banco pertence um ativo."""
+    try:
+        content += " Esse ativo pertence a qual banco?"
+        
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": stock}],
+            max_tokens=50
+        )
+
+        return response.choices[0].message.content.strip()
+
+    except Exception as e:
+        print(f"Erro ao consultar OpenAI: {e}")
+        return response
