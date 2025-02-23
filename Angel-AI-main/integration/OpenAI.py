@@ -55,9 +55,9 @@ def ask_stock_description_ai(ticker_name):
     try:
         print(f"{Fore.GREEN}[IA] Consultando OpenAI para obter a descrição do ativo: {ticker_name}...")
         prompt = (
-            f"Faça uma descrição precisa sobre o ativo {ticker_name}, incluindo sua relevância no mercado financeiro. "
-            "Explique seus principais aspectos, histórico de valorização e importância para investidores, "
-            "mas seja direto e objetivo na resposta."
+            f"Forneça uma análise objetiva sobre o status atual do ativo {ticker_name} no mercado financeiro. Explique"
+            "sua relevância para investidores no momento, considerando fatores como desempenho recente,"
+            "volatilidade, tendências de valorização ou desvalorização e perspectivas futuras. Seja direto e conciso."
         )
 
         response = openai.ChatCompletion.create(
