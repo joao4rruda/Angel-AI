@@ -13,66 +13,37 @@ if api_key:
 else:
     print(f"{Fore.RED}[ERRO] Variável de ambiente OPENAI_API_KEY não está definida!")
 
-def ask_stock_name_ai(ticker_name):
-    """Consulta a OpenAI para identificar a qual banco pertence um ativo."""
+def ask_openai(prompt, max_tokens=50):
+    """Consulta a OpenAI com um prompt e retorna a resposta."""
     try:
-        print(f"{Fore.GREEN}[IA] Consultando OpenAI para identificar o banco do ativo: {ticker_name}...")
-        prompt = f"A qual banco pertence o ativo {ticker_name}? Responda apenas com o nome do banco, sem nenhuma informação adicional."
-
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": prompt}],
-            max_tokens=50
+            max_tokens=max_tokens
         )
-
-        banco = response.choices[0].message.content.strip()
-        print(f"{Fore.GREEN}[IA] Resposta recebida: {banco}")
-        return banco
-
+        return response.choices[0].message.content.strip()
+    
     except Exception as e:
-        print(f"{Fore.RED}[ERRO] Falha ao consultar OpenAI para {ticker_name}: {e}")
+        print(f"{Fore.RED}[ERRO] Falha ao consultar OpenAI: {e}")
         return None
+
+def ask_stock_name_ai(ticker_name):
+    """Obtém o nome do banco ao qual pertence um ativo."""
+    print(f"{Fore.GREEN}[IA] Identificando o banco do ativo: {ticker_name}...")
+    prompt = f"A qual banco pertence o ativo {ticker_name}? Responda apenas com o nome do banco."
+    return ask_openai(prompt)
 
 def ask_stock_description_ai(ticker_name):
-    """Consulta a OpenAI para obter uma descrição detalhada sobre um ativo e sua relevância no mercado."""
-    try:
-        print(f"{Fore.GREEN}[IA] Consultando OpenAI para obter a descrição do ativo: {ticker_name}...")
-        prompt = (
-            f"Forneça uma análise objetiva sobre o status atual do ativo {ticker_name} no mercado financeiro. Explique"
-            "sua relevância para investidores no momento, considerando fatores como desempenho recente,"
-            "volatilidade, tendências de valorização ou desvalorização e perspectivas futuras. Seja direto e conciso."
-        )
+    """Obtém uma análise do ativo no mercado financeiro."""
+    print(f"{Fore.GREEN}[IA] Obtendo análise do ativo: {ticker_name}...")
+    prompt = (
+        f"Forneça uma análise objetiva sobre o status atual do ativo {ticker_name} no mercado financeiro. "
+        f"Explique sua relevância para investidores, considerando desempenho recente, volatilidade e tendências."
+    )
+    return ask_openai(prompt, max_tokens=150)
 
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=150  # Ajustei para permitir respostas mais completas
-        )
-
-        descricao = response.choices[0].message.content.strip()
-        print(f"{Fore.GREEN}[IA] Descrição recebida com sucesso.")
-        return descricao
-
-    except Exception as e:
-        print(f"{Fore.RED}[ERRO] Falha ao consultar OpenAI para {ticker_name}: {e}")
-        return None
-    
 def ask_sector_ai(ticker_name):
-    """Consulta a OpenAI para obter o setor do ativo."""
-    try:
-        print(f"{Fore.GREEN}[IA] Consultando OpenAI para obter o setor do ativo: {ticker_name}...")
-        prompt = f"Qual é o setor do ativo {ticker_name}? Responda apenas com o nome do setor, sem nenhuma informação adicional."
-
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=50
-        )
-
-        setor = response.choices[0].message.content.strip()
-        print(f"{Fore.GREEN}[IA] Resposta recebida com sucesso: {setor}")
-        return setor
-
-    except Exception as e:
-        print(f"{Fore.RED}[ERRO] Falha ao consultar OpenAI para {ticker_name}: {e}")
-        return None
+    """Obtém o setor do ativo."""
+    print(f"{Fore.GREEN}[IA] Identificando o setor do ativo: {ticker_name}...")
+    prompt = f"Qual é o setor do ativo {ticker_name}? Responda apenas com o nome do setor."
+    return ask_openai(prompt)

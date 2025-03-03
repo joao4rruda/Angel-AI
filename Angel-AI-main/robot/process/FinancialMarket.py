@@ -20,7 +20,7 @@ def monitor_stocks():
                 print(f"\n[INFO] Pesquisando ações de: {ticker}")
                 get_stock_data(ticker, driver, wait)
                 print(f"[INFO] {ticker} processado. Aguardando antes da próxima pesquisa...\n")
-                time.sleep(5)  # Pequena pausa entre as pesquisas
+                time.sleep(2)  # Pequena pausa entre as pesquisas
 
             print("\n[INFO] Todas as buscas foram concluídas. Aguardando 1 hora para a próxima varredura...\n")
             time.sleep(3600)  # Aguarda 1 hora antes de repetir o processo
