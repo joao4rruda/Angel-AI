@@ -5,18 +5,17 @@ from selenium.webdriver.edge.service import Service
 from selenium.webdriver.edge.options import Options
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from colorama import Fore, init
 
-from integration.OpenAI import open_integration, ask_stock_name_ai, ask_stock_description_ai, ask_sector_ai
-from database.supabase_client import insert_stocks
+from integration.prompts.FinancialMarket.mainPrompt import ask_stock_name_ai, ask_stock_description_ai, ask_sector_ai
+from database.FinancialMarketSQL.queryInsert import insert_stocks
 
 # Inicializa o colorama para cores no terminal
 init(autoreset=True)
 
-def initialize_driver():
+def initialize_driver():    
     """Configura e retorna um WebDriver do Edge."""
     options = Options()
     options.add_argument("--disable-gpu")

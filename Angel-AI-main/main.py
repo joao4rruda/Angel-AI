@@ -1,20 +1,19 @@
-from robot.process import FinancialMarket, WhatsAppMessager
+from robot.process.FinancialMarket import monitor_stocks
 
-def main_menu():
+def main():
     while True:
         print("\n===== MENU PRINCIPAL =====")
         print("1. Executar Financial Market")
         print("2. Executar WhatsApp Messager")
         print("3. Sair")
-        
+
         opcao = input("Escolha uma opção: ")
-        
+
         if opcao == "1":
             print("Executando Financial Market...")
-            FinancialMarket()
+            monitor_stocks()
         elif opcao == "2":
             print("Executando WhatsApp Messager...")
-            WhatsAppMessager()
         elif opcao == "3":
             print("Saindo do programa...")
             break
@@ -22,4 +21,4 @@ def main_menu():
             print("Opção inválida! Tente novamente.")
 
 if __name__ == "__main__":
-    main_menu()
+    main()

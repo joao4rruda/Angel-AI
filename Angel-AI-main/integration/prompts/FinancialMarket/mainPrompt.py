@@ -13,23 +13,6 @@ if api_key:
 else:
     print(f"{Fore.RED}[ERRO] Variável de ambiente OPENAI_API_KEY não está definida!")
 
-def open_integration(content):
-    """Envia um pedido de análise para a OpenAI e retorna a resposta."""
-    try:
-        print(f"{Fore.GREEN}[IA] Enviando solicitação de análise para OpenAI...")
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": content}],
-            max_tokens=50
-        )
-        resposta = response.choices[0].message.content.strip()
-        print(f"{Fore.GREEN}[IA] Resposta recebida com sucesso.")
-        return resposta
-
-    except Exception as e:
-        print(f"{Fore.RED}[ERRO] Falha ao consultar a OpenAI: {e}")
-        return None
-
 def ask_stock_name_ai(ticker_name):
     """Consulta a OpenAI para identificar a qual banco pertence um ativo."""
     try:
